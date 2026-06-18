@@ -133,6 +133,8 @@ declare
   actual_home integer;
   actual_away integer;
 begin
+  perform set_config('app.scoring_update', 'on', true);
+
   select home_score, away_score
   into actual_home, actual_away
   from public.matches
@@ -197,7 +199,10 @@ language plpgsql
 as $$
 declare
   match_kickoff timestamptz;
+  is_scoring_update boolean;
 begin
+  is_scoring_update = coalesce(current_setting('app.scoring_update', true), '') = 'on';
+
   select kickoff_time
   into match_kickoff
   from public.matches
@@ -207,12 +212,24 @@ begin
     raise exception 'Match not found';
   end if;
 
-  if now() >= match_kickoff and not public.is_admin() then
+  if now() >= match_kickoff and not public.is_admin() and not is_scoring_update then
     raise exception 'Predictions are locked after kickoff';
   end if;
 
   if tg_op = 'UPDATE' and new.user_id <> old.user_id then
     raise exception 'Prediction owner cannot be changed';
+  end if;
+
+  if tg_op = 'UPDATE' and new.match_id <> old.match_id then
+    raise exception 'Prediction match cannot be changed';
+  end if;
+
+  if tg_op = 'UPDATE' and is_scoring_update then
+    if new.home_score <> old.home_score or new.away_score <> old.away_score then
+      raise exception 'Scoring updates cannot change predicted scores';
+    end if;
+
+    return new;
   end if;
 
   if tg_op = 'UPDATE' then

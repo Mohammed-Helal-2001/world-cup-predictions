@@ -16,7 +16,7 @@ export async function requireUser() {
     .from("profiles")
     .select("id,email,username,role")
     .eq("id", user.id)
-    .returns<Profile>()
+    .returns<Profile[]>()
     .single();
 
   return { supabase, user, profile };

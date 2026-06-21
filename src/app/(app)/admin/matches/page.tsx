@@ -14,10 +14,11 @@ export default async function AdminMatchesPage() {
     .returns<Match[]>();
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-ink">Admin Match Management</h1>
-        <p className="mt-1 text-sm text-ink/65">Create and edit match fixtures.</p>
+    <div className="space-y-6">
+      <div className="page-heading">
+        <p className="eyebrow">Fixture control</p>
+        <h1 className="mt-2 text-2xl font-bold text-ink sm:text-3xl">Admin Match Management</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/65">Create fixtures and adjust kickoff timing before matchday.</p>
       </div>
 
       <AdminMatchForm />
@@ -27,7 +28,7 @@ export default async function AdminMatchesPage() {
       {matches?.length ? (
         <div className="space-y-4">
           {matches.map((match) => (
-            <div key={match.id} className="panel p-4">
+            <div key={match.id} className="panel p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h2 className="font-bold">

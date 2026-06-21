@@ -39,12 +39,12 @@ export function ResultEntryForm({ match }: { match: Match }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-3 rounded-md border border-line p-3 sm:grid-cols-[1fr_90px_90px_auto] sm:items-end">
+    <form onSubmit={onSubmit} className="grid gap-3 rounded-md border border-line bg-field/40 p-4 sm:grid-cols-[1fr_96px_96px_auto] sm:items-end">
       <div>
         <p className="font-semibold">
           {match.home_team} vs {match.away_team}
         </p>
-        <p className="text-sm text-ink/60">Current status: {match.status}</p>
+        <p className="mt-1 text-sm text-ink/60">Current status: {match.status}</p>
       </div>
       <label className="space-y-1.5">
         <span className="label">{match.home_team}</span>
@@ -58,8 +58,8 @@ export function ResultEntryForm({ match }: { match: Match }) {
         <Flag size={16} />
         {loading ? "Saving..." : "Save result"}
       </button>
-      {error ? <p className="rounded-md bg-coral/10 p-2 text-sm text-coral sm:col-span-4">{error}</p> : null}
-      {success ? <p className="rounded-md bg-pitch/10 p-2 text-sm text-pitch sm:col-span-4">{success}</p> : null}
+      {error ? <p className="rounded-md bg-coral/10 p-2 text-sm font-medium text-coral sm:col-span-4">{error}</p> : null}
+      {success ? <p className="rounded-md bg-pitch/10 p-2 text-sm font-medium text-pitch sm:col-span-4">{success}</p> : null}
     </form>
   );
 }

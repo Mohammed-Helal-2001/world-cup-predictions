@@ -100,8 +100,8 @@ export function AuthForm({ mode }: Props) {
         />
       </div>
 
-      {error ? <p className="rounded-md bg-coral/10 p-3 text-sm text-coral">{error}</p> : null}
-      {message ? <p className="rounded-md bg-pitch/10 p-3 text-sm text-pitch">{message}</p> : null}
+      {error ? <p className="rounded-md bg-coral/10 p-3 text-sm font-medium text-coral">{error}</p> : null}
+      {message ? <p className="rounded-md bg-pitch/10 p-3 text-sm font-medium text-pitch">{message}</p> : null}
 
       <button className="btn-primary w-full" disabled={loading}>
         {loading ? "Please wait..." : mode === "login" ? "Log in" : "Create account"}

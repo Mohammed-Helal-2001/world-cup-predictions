@@ -53,8 +53,8 @@ export function PredictionForm({ match, userId, prediction }: Props) {
 
   if (!open) {
     return (
-      <div className="rounded-md bg-field p-3 text-sm text-ink/70">
-        Predictions are locked for this match.
+      <div className="rounded-md border border-line bg-white p-3 text-sm font-medium text-ink/70">
+        Predictions are locked for this match. Your saved score is protected.
       </div>
     );
   }
@@ -63,7 +63,7 @@ export function PredictionForm({ match, userId, prediction }: Props) {
     <form onSubmit={onSubmit} className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
         <label className="space-y-1.5">
-          <span className="label">{match.home_team}</span>
+          <span className="label truncate">{match.home_team}</span>
           <input
             className="input"
             type="number"
@@ -73,7 +73,7 @@ export function PredictionForm({ match, userId, prediction }: Props) {
           />
         </label>
         <label className="space-y-1.5">
-          <span className="label">{match.away_team}</span>
+          <span className="label truncate">{match.away_team}</span>
           <input
             className="input"
             type="number"

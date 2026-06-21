@@ -53,7 +53,7 @@ export function AdminMatchForm({ match }: { match?: Match }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="panel space-y-4 p-4">
+    <form onSubmit={onSubmit} className={match ? "space-y-4 border-t border-line pt-4" : "panel space-y-4 p-5"}>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="space-y-1.5">
           <span className="label">Home team</span>

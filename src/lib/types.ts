@@ -42,3 +42,18 @@ export type LeaderboardRow = {
   prediction_count: number;
   exact_score_count: number;
 };
+
+export type FinishedPredictionDetail = {
+  user_id: string;
+  display_name: string;
+  match_id: string;
+  home_team: string;
+  away_team: string;
+  kickoff_time: string;
+  predicted_home_score: number;
+  predicted_away_score: number;
+  final_home_score: number;
+  final_away_score: number;
+  points: number;
+  exact_score: boolean;
+};

@@ -14,16 +14,17 @@ export default async function PredictionsPage() {
     .returns<PredictionWithMatch[]>();
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-ink">My Predictions</h1>
-        <p className="mt-1 text-sm text-ink/65">Review saved predictions, results, and awarded points.</p>
+    <div className="space-y-6">
+      <div className="page-heading">
+        <p className="eyebrow">Prediction history</p>
+        <h1 className="mt-2 text-2xl font-bold text-ink sm:text-3xl">My Predictions</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/65">Review saved predictions, final results, and awarded points.</p>
       </div>
 
       {error ? <p className="rounded-md bg-coral/10 p-3 text-sm text-coral">{error.message}</p> : null}
 
       {predictions?.length ? (
-        <div className="overflow-hidden rounded-lg border border-line bg-white">
+        <div className="overflow-hidden rounded-lg border border-line bg-white shadow-sm">
           <div className="grid min-w-[720px] grid-cols-6 border-b border-line bg-field px-4 py-3 text-xs font-bold uppercase text-ink/60">
             <span>Match</span>
             <span>Kickoff</span>

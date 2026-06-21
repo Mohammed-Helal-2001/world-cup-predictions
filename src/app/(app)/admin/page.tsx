@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarPlus, Flag, ShieldCheck } from "lucide-react";
+import { CalendarPlus, Flag, ShieldCheck, TableProperties } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
 
 export default async function AdminPage() {
@@ -12,7 +12,7 @@ export default async function AdminPage() {
         <h1 className="mt-2 text-2xl font-bold text-ink sm:text-3xl">Admin Dashboard</h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/65">Manage fixtures, lock in final scores, and keep the competition table accurate.</p>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-3">
         <Link href="/admin/matches" className="panel p-6 transition hover:border-pitch">
           <CalendarPlus className="text-pitch" size={26} />
           <h2 className="mt-4 text-lg font-bold">Match Management</h2>
@@ -22,6 +22,11 @@ export default async function AdminPage() {
           <Flag className="text-pitch" size={26} />
           <h2 className="mt-4 text-lg font-bold">Result Entry</h2>
           <p className="mt-2 text-sm leading-6 text-ink/65">Save final scores and automatically recalculate points.</p>
+        </Link>
+        <Link href="/admin/predictions" className="panel p-6 transition hover:border-pitch">
+          <TableProperties className="text-pitch" size={26} />
+          <h2 className="mt-4 text-lg font-bold">All Predictions</h2>
+          <p className="mt-2 text-sm leading-6 text-ink/65">Audit every submitted user prediction across all match states.</p>
         </Link>
       </div>
       <div className="rounded-lg border border-line bg-field p-4 text-sm text-ink/70">

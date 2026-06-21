@@ -35,6 +35,11 @@ export type PredictionWithMatch = Prediction & {
   matches: Match | null;
 };
 
+export type AdminPredictionRow = Prediction & {
+  profiles: Profile | null;
+  matches: Match | null;
+};
+
 export type LeaderboardRow = {
   user_id: string;
   display_name: string;

@@ -1,7 +1,7 @@
 import { EmptyState } from "@/components/EmptyState";
 import { LeaderboardDetails } from "@/components/LeaderboardDetails";
 import { requireUser } from "@/lib/auth";
-import type { FinishedPredictionDetail, LeaderboardRow } from "@/lib/types";
+import type { LeaderboardPredictionDetail, LeaderboardRow } from "@/lib/types";
 
 export default async function LeaderboardPage() {
   const { supabase } = await requireUser();
@@ -16,7 +16,7 @@ export default async function LeaderboardPage() {
       .from("finished_prediction_details")
       .select("*")
       .order("kickoff_time", { ascending: false })
-      .returns<FinishedPredictionDetail[]>()
+      .returns<LeaderboardPredictionDetail[]>()
   ]);
 
   return (
@@ -25,7 +25,7 @@ export default async function LeaderboardPage() {
         <p className="eyebrow">Competition table</p>
         <h1 className="mt-2 text-2xl font-bold text-ink sm:text-3xl">Leaderboard</h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/65">
-          Ranked by total points, then exact scores. Select a competitor to review finished-match prediction details.
+          Ranked by total points, then exact scores. Select a competitor to review finished and locked prediction details.
         </p>
       </div>
 

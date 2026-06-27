@@ -48,7 +48,7 @@ export type LeaderboardRow = {
   exact_score_count: number;
 };
 
-export type FinishedPredictionDetail = {
+export type LeaderboardPredictionDetail = {
   user_id: string;
   display_name: string;
   match_id: string;
@@ -57,8 +57,9 @@ export type FinishedPredictionDetail = {
   kickoff_time: string;
   predicted_home_score: number;
   predicted_away_score: number;
-  final_home_score: number;
-  final_away_score: number;
-  points: number;
-  exact_score: boolean;
+  final_home_score: number | null;
+  final_away_score: number | null;
+  points: number | null;
+  exact_score: boolean | null;
+  match_status: MatchStatus;
 };

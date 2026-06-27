@@ -4,18 +4,18 @@ import { useMemo, useState } from "react";
 import { CheckCircle2, ChevronRight, Trophy, X } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { formatDateTime } from "@/lib/format";
-import type { FinishedPredictionDetail, LeaderboardRow } from "@/lib/types";
+import type { LeaderboardPredictionDetail, LeaderboardRow } from "@/lib/types";
 
 type Props = {
   rows: LeaderboardRow[];
-  details: FinishedPredictionDetail[];
+  details: LeaderboardPredictionDetail[];
 };
 
 export function LeaderboardDetails({ rows, details }: Props) {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const selectedRow = rows.find((row) => row.user_id === selectedUserId) ?? null;
   const detailsByUser = useMemo(() => {
-    return details.reduce<Record<string, FinishedPredictionDetail[]>>((acc, detail) => {
+    return details.reduce<Record<string, LeaderboardPredictionDetail[]>>((acc, detail) => {
       acc[detail.user_id] = acc[detail.user_id] ?? [];
       acc[detail.user_id].push(detail);
       return acc;
@@ -64,7 +64,7 @@ export function LeaderboardDetails({ rows, details }: Props) {
           <div className="max-h-[88vh] w-full overflow-hidden rounded-t-lg bg-white shadow-soft sm:mx-auto sm:max-w-3xl sm:rounded-lg">
             <div className="flex items-start justify-between gap-4 border-b border-line p-4 sm:p-5">
               <div>
-                <p className="eyebrow">Finished predictions</p>
+                <p className="eyebrow">Finished and locked predictions</p>
                 <h2 className="mt-1 text-xl font-bold text-ink">{selectedRow.display_name}</h2>
                 <p className="mt-1 text-sm text-ink/60">
                   {selectedRow.total_points} total points, {selectedRow.exact_score_count} exact scores
@@ -84,7 +84,10 @@ export function LeaderboardDetails({ rows, details }: Props) {
                           <h3 className="font-bold text-ink">
                             {detail.home_team} <span className="text-ink/35">vs</span> {detail.away_team}
                           </h3>
-                          <p className="mt-1 text-sm text-ink/60">{formatDateTime(detail.kickoff_time)}</p>
+                          <p className="mt-1 text-sm text-ink/60">Kickoff: {formatDateTime(detail.kickoff_time)}</p>
+                          <p className="mt-1 text-xs font-bold uppercase tracking-wide text-ink/45">
+                            Status: {detail.match_status}
+                          </p>
                         </div>
                         {detail.exact_score ? (
                           <span className="inline-flex items-center gap-1 rounded-full bg-pitch/10 px-2.5 py-1 text-xs font-bold text-pitch">
@@ -102,20 +105,24 @@ export function LeaderboardDetails({ rows, details }: Props) {
                         </div>
                         <div className="rounded-md bg-white p-3">
                           <p className="text-xs font-bold uppercase tracking-wide text-ink/45">Final result</p>
-                          <p className="mt-1 text-lg font-bold">
-                            {detail.final_home_score} - {detail.final_away_score}
-                          </p>
+                          {detail.final_home_score !== null && detail.final_away_score !== null ? (
+                            <p className="mt-1 text-lg font-bold">
+                              {detail.final_home_score} - {detail.final_away_score}
+                            </p>
+                          ) : (
+                            <p className="mt-1 text-sm font-semibold text-ink/65">Result not entered yet</p>
+                          )}
                         </div>
                         <div className="rounded-md bg-white p-3">
                           <p className="text-xs font-bold uppercase tracking-wide text-ink/45">Points</p>
-                          <p className="mt-1 text-lg font-bold text-pitch">{detail.points}</p>
+                          <p className="mt-1 text-lg font-bold text-pitch">{detail.points ?? "-"}</p>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <EmptyState title="No finished predictions" text="This competitor has no predictions for finished matches yet." />
+                <EmptyState title="No locked predictions" text="This competitor has no finished or locked predictions yet." />
               )}
             </div>
           </div>

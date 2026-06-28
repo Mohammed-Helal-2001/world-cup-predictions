@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CheckCircle2, ChevronRight, Trophy, X } from "lucide-react";
+import { CheckCircle2, ChevronRight, Crown, Trophy, X } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { formatDateTime, formatPenaltyWinner } from "@/lib/format";
 import type { LeaderboardPredictionDetail, LeaderboardRow } from "@/lib/types";
@@ -13,6 +13,7 @@ type Props = {
 
 export function LeaderboardDetails({ rows, details }: Props) {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const leader = rows[0] ?? null;
   const selectedRow = rows.find((row) => row.user_id === selectedUserId) ?? null;
   const detailsByUser = useMemo(() => {
     return details.reduce<Record<string, LeaderboardPredictionDetail[]>>((acc, detail) => {
@@ -25,6 +26,30 @@ export function LeaderboardDetails({ rows, details }: Props) {
 
   return (
     <>
+      {leader ? (
+        <section className="animate-[kingCardIn_520ms_ease-out_both] overflow-hidden rounded-lg border border-gold/35 bg-gradient-to-br from-[#fff7cf] via-[#f0c85a] to-[#a87913] p-5 text-ink shadow-soft ring-1 ring-white/45 sm:p-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-4">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-white/75 text-gold shadow-sm ring-1 ring-white/70">
+                <Crown size={30} strokeWidth={2.4} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-black text-ink sm:text-base">👑 ملك التوقعات</p>
+                <h2 className="mt-2 truncate text-2xl font-black text-ink sm:text-3xl">{leader.display_name}</h2>
+                <p className="mt-1 text-sm font-semibold text-ink/65">Current rank #1</p>
+              </div>
+            </div>
+            <div className="rounded-lg bg-white/70 p-4 shadow-sm ring-1 ring-white/70 sm:min-w-44 sm:text-right">
+              <p className="text-xs font-bold uppercase tracking-wide text-ink/55">Current points</p>
+              <p className="mt-1 flex items-center gap-2 text-3xl font-black text-ink sm:justify-end">
+                <Trophy size={22} className="text-gold" />
+                {leader.total_points}
+              </p>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <div className="overflow-hidden rounded-lg border border-line bg-white shadow-sm">
         <div className="hidden grid-cols-[80px_1fr_120px_140px_120px_44px] border-b border-line bg-field/80 px-4 py-3 text-xs font-bold uppercase tracking-wide text-ink/55 md:grid">
           <span>Rank</span>

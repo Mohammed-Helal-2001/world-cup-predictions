@@ -4,27 +4,36 @@ import { FormEvent, useState } from "react";
 import { Flag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import type { Match } from "@/lib/types";
+import type { Match, PenaltyWinnerTeam } from "@/lib/types";
 
 export function ResultEntryForm({ match }: { match: Match }) {
   const router = useRouter();
   const supabase = createClient();
   const [homeScore, setHomeScore] = useState(match.home_score ?? 0);
   const [awayScore, setAwayScore] = useState(match.away_score ?? 0);
+  const [penaltyWinner, setPenaltyWinner] = useState<PenaltyWinnerTeam | null>(match.penalty_winner_team ?? null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const showPenaltyWinner = match.penalties_enabled && homeScore === awayScore;
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setLoading(true);
     setError(null);
     setSuccess(null);
+
+    if (showPenaltyWinner && !penaltyWinner) {
+      setError("Choose who won on penalties.");
+      return;
+    }
+
+    setLoading(true);
 
     const { error: rpcError } = await supabase.rpc("finish_match_with_result", {
       target_match_id: match.id,
       final_home_score: homeScore,
-      final_away_score: awayScore
+      final_away_score: awayScore,
+      final_penalty_winner_team: showPenaltyWinner ? penaltyWinner : null
     });
 
     setLoading(false);
@@ -54,6 +63,35 @@ export function ResultEntryForm({ match }: { match: Match }) {
         <span className="label">{match.away_team}</span>
         <input className="input" type="number" min={0} value={awayScore} onChange={(event) => setAwayScore(Number(event.target.value))} />
       </label>
+      {showPenaltyWinner ? (
+        <div className="rounded-md border border-line bg-white p-3 sm:col-span-4">
+          <p className="label">Who won on penalties?</p>
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            <label className="flex items-center gap-2 rounded-md border border-line bg-field/50 p-3 text-sm font-semibold">
+              <input
+                className="h-4 w-4 accent-pitch"
+                type="radio"
+                name={`result-penalty-winner-${match.id}`}
+                checked={penaltyWinner === "home"}
+                onChange={() => setPenaltyWinner("home")}
+                required
+              />
+              {match.home_team}
+            </label>
+            <label className="flex items-center gap-2 rounded-md border border-line bg-field/50 p-3 text-sm font-semibold">
+              <input
+                className="h-4 w-4 accent-pitch"
+                type="radio"
+                name={`result-penalty-winner-${match.id}`}
+                checked={penaltyWinner === "away"}
+                onChange={() => setPenaltyWinner("away")}
+                required
+              />
+              {match.away_team}
+            </label>
+          </div>
+        </div>
+      ) : null}
       <button className="btn-primary" disabled={loading}>
         <Flag size={16} />
         {loading ? "Saving..." : "Save result"}

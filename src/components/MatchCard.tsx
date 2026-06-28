@@ -1,5 +1,5 @@
 import { CalendarDays, Goal, LockKeyhole, PencilLine } from "lucide-react";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, formatPenaltyWinner } from "@/lib/format";
 import type { Match, Prediction } from "@/lib/types";
 import { PredictionForm } from "@/components/PredictionForm";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -46,6 +46,11 @@ export function MatchCard({
             <span className="font-bold">
               {prediction.home_score} - {prediction.away_score}
             </span>
+            {match.penalties_enabled && prediction.penalty_winner_team ? (
+              <span className="text-ink/60">
+                Pens: {formatPenaltyWinner(prediction.penalty_winner_team, match.home_team, match.away_team)}
+              </span>
+            ) : null}
             {match.status === "finished" ? (
               <span className="ml-2 text-pitch">({prediction.points} points)</span>
             ) : null}

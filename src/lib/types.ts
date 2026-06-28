@@ -1,5 +1,6 @@
 export type Role = "user" | "admin";
 export type MatchStatus = "scheduled" | "live" | "finished";
+export type PenaltyWinnerTeam = "home" | "away";
 
 export type Profile = {
   id: string;
@@ -16,6 +17,8 @@ export type Match = {
   status: MatchStatus;
   home_score: number | null;
   away_score: number | null;
+  penalties_enabled: boolean;
+  penalty_winner_team: PenaltyWinnerTeam | null;
   created_at: string;
 };
 
@@ -25,6 +28,7 @@ export type Prediction = {
   user_id: string;
   home_score: number;
   away_score: number;
+  penalty_winner_team: PenaltyWinnerTeam | null;
   points: number;
   exact_score: boolean;
   created_at: string;
@@ -57,8 +61,11 @@ export type LeaderboardPredictionDetail = {
   kickoff_time: string;
   predicted_home_score: number;
   predicted_away_score: number;
+  predicted_penalty_winner_team: PenaltyWinnerTeam | null;
   final_home_score: number | null;
   final_away_score: number | null;
+  final_penalty_winner_team: PenaltyWinnerTeam | null;
+  penalties_enabled: boolean;
   points: number | null;
   exact_score: boolean | null;
   match_status: MatchStatus;

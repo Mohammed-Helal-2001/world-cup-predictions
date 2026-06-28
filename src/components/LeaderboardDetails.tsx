@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { CheckCircle2, ChevronRight, Trophy, X } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, formatPenaltyWinner } from "@/lib/format";
 import type { LeaderboardPredictionDetail, LeaderboardRow } from "@/lib/types";
 
 type Props = {
@@ -102,13 +102,25 @@ export function LeaderboardDetails({ rows, details }: Props) {
                           <p className="mt-1 text-lg font-bold">
                             {detail.predicted_home_score} - {detail.predicted_away_score}
                           </p>
+                          {detail.penalties_enabled && detail.predicted_penalty_winner_team ? (
+                            <p className="mt-1 text-xs font-semibold text-ink/55">
+                              Pens: {formatPenaltyWinner(detail.predicted_penalty_winner_team, detail.home_team, detail.away_team)}
+                            </p>
+                          ) : null}
                         </div>
                         <div className="rounded-md bg-white p-3">
                           <p className="text-xs font-bold uppercase tracking-wide text-ink/45">Final result</p>
                           {detail.final_home_score !== null && detail.final_away_score !== null ? (
-                            <p className="mt-1 text-lg font-bold">
-                              {detail.final_home_score} - {detail.final_away_score}
-                            </p>
+                            <>
+                              <p className="mt-1 text-lg font-bold">
+                                {detail.final_home_score} - {detail.final_away_score}
+                              </p>
+                              {detail.penalties_enabled && detail.final_penalty_winner_team ? (
+                                <p className="mt-1 text-xs font-semibold text-ink/55">
+                                  Pens: {formatPenaltyWinner(detail.final_penalty_winner_team, detail.home_team, detail.away_team)}
+                                </p>
+                              ) : null}
+                            </>
                           ) : (
                             <p className="mt-1 text-sm font-semibold text-ink/65">Result not entered yet</p>
                           )}

@@ -13,6 +13,7 @@ export function AdminMatchForm({ match }: { match?: Match }) {
   const [awayTeam, setAwayTeam] = useState(match?.away_team ?? "");
   const [kickoffTime, setKickoffTime] = useState(match ? toLocalInput(match.kickoff_time) : "");
   const [status, setStatus] = useState<MatchStatus>(match?.status ?? "scheduled");
+  const [penaltiesEnabled, setPenaltiesEnabled] = useState(match?.penalties_enabled ?? false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,7 +28,8 @@ export function AdminMatchForm({ match }: { match?: Match }) {
       home_team: homeTeam.trim(),
       away_team: awayTeam.trim(),
       kickoff_time: new Date(kickoffTime).toISOString(),
-      status
+      status,
+      penalties_enabled: penaltiesEnabled
     };
 
     const request = match
@@ -48,6 +50,7 @@ export function AdminMatchForm({ match }: { match?: Match }) {
       setAwayTeam("");
       setKickoffTime("");
       setStatus("scheduled");
+      setPenaltiesEnabled(false);
     }
     router.refresh();
   }
@@ -84,6 +87,18 @@ export function AdminMatchForm({ match }: { match?: Match }) {
           </select>
         </label>
       </div>
+      <label className="flex items-start gap-3 rounded-md border border-line bg-field/40 p-3">
+        <input
+          className="mt-1 h-4 w-4 accent-pitch"
+          type="checkbox"
+          checked={penaltiesEnabled}
+          onChange={(event) => setPenaltiesEnabled(event.target.checked)}
+        />
+        <span>
+          <span className="block text-sm font-semibold text-ink">Enable penalty shootout prediction for this match</span>
+          <span className="mt-1 block text-xs leading-5 text-ink/60">Use only for knockout matches where a drawn score needs a penalty winner.</span>
+        </span>
+      </label>
       {error ? <p className="rounded-md bg-coral/10 p-2 text-sm text-coral">{error}</p> : null}
       {success ? <p className="rounded-md bg-pitch/10 p-2 text-sm text-pitch">{success}</p> : null}
       <button className="btn-primary" disabled={loading}>

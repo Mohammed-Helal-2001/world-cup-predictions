@@ -13,3 +13,9 @@ export function getMatchLabel(kickoffTime: string, status: string) {
   if (status === "finished") return "Result entered";
   return isPredictionOpen(kickoffTime) ? "Prediction open" : "Prediction locked";
 }
+
+export function formatPenaltyWinner(value: "home" | "away" | null | undefined, homeTeam: string, awayTeam: string) {
+  if (value === "home") return homeTeam;
+  if (value === "away") return awayTeam;
+  return null;
+}

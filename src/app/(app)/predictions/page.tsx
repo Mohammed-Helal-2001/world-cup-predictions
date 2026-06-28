@@ -1,6 +1,6 @@
 import { EmptyState } from "@/components/EmptyState";
 import { StatusBadge } from "@/components/StatusBadge";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, formatPenaltyWinner } from "@/lib/format";
 import { requireUser } from "@/lib/auth";
 import type { PredictionWithMatch } from "@/lib/types";
 
@@ -43,10 +43,30 @@ export default async function PredictionsPage() {
                   </span>
                   <span>{match ? formatDateTime(match.kickoff_time) : "-"}</span>
                   <span>
-                    {prediction.home_score} - {prediction.away_score}
+                    <span className="block font-semibold">
+                      {prediction.home_score} - {prediction.away_score}
+                    </span>
+                    {match?.penalties_enabled && prediction.penalty_winner_team ? (
+                      <span className="mt-1 block text-xs text-ink/55">
+                        Pens: {formatPenaltyWinner(prediction.penalty_winner_team, match.home_team, match.away_team)}
+                      </span>
+                    ) : null}
                   </span>
                   <span>
-                    {match?.status === "finished" ? `${match.home_score} - ${match.away_score}` : "-"}
+                    {match?.status === "finished" ? (
+                      <>
+                        <span className="block font-semibold">
+                          {match.home_score} - {match.away_score}
+                        </span>
+                        {match.penalties_enabled && match.penalty_winner_team ? (
+                          <span className="mt-1 block text-xs text-ink/55">
+                            Pens: {formatPenaltyWinner(match.penalty_winner_team, match.home_team, match.away_team)}
+                          </span>
+                        ) : null}
+                      </>
+                    ) : (
+                      "-"
+                    )}
                   </span>
                   <span>{match ? <StatusBadge kickoffTime={match.kickoff_time} status={match.status} /> : "-"}</span>
                   <span className="font-bold text-pitch">{prediction.points}</span>

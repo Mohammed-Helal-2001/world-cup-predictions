@@ -1,7 +1,7 @@
 import { CheckCircle2, Clock3 } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { StatusBadge } from "@/components/StatusBadge";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, formatPenaltyWinner } from "@/lib/format";
 import { requireAdmin } from "@/lib/auth";
 import type { AdminPredictionRow } from "@/lib/types";
 
@@ -36,7 +36,7 @@ export default async function AdminPredictionsPage() {
       {predictions.length ? (
         <>
           <div className="hidden overflow-hidden rounded-lg border border-line bg-white shadow-sm xl:block">
-            <div className="grid grid-cols-[1.2fr_1.3fr_1fr_110px_110px_80px_110px_135px_135px] gap-3 border-b border-line bg-field/80 px-4 py-3 text-xs font-bold uppercase tracking-wide text-ink/55">
+            <div className="grid grid-cols-[1.2fr_1.3fr_1fr_110px_135px_135px_110px_135px_135px] gap-3 border-b border-line bg-field/80 px-4 py-3 text-xs font-bold uppercase tracking-wide text-ink/55">
               <span>User</span>
               <span>Match</span>
               <span>Kickoff</span>
@@ -50,13 +50,13 @@ export default async function AdminPredictionsPage() {
             {predictions.map((prediction) => (
               <div
                 key={prediction.id}
-                className="grid grid-cols-[1.2fr_1.3fr_1fr_110px_110px_80px_110px_135px_135px] items-center gap-3 border-b border-line px-4 py-3 text-sm last:border-0"
+                className="grid grid-cols-[1.2fr_1.3fr_1fr_110px_135px_135px_110px_135px_135px] items-center gap-3 border-b border-line px-4 py-3 text-sm last:border-0"
               >
                 <UserCell prediction={prediction} />
                 <span className="font-semibold">{formatMatchName(prediction)}</span>
                 <span className="text-ink/70">{prediction.matches ? formatDateTime(prediction.matches.kickoff_time) : "-"}</span>
                 <span>{prediction.matches ? <StatusBadge kickoffTime={prediction.matches.kickoff_time} status={prediction.matches.status} /> : "-"}</span>
-                <ScoreText home={prediction.home_score} away={prediction.away_score} />
+                <ScoreText prediction={prediction} />
                 <span>{prediction.matches ? <FinalResultText prediction={prediction} /> : "-"}</span>
                 <PointsCell prediction={prediction} />
                 <span className="text-ink/70">{formatDateTime(prediction.created_at)}</span>
@@ -85,7 +85,7 @@ export default async function AdminPredictionsPage() {
                 </div>
 
                 <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
-                  <Metric label="Prediction" value={`${prediction.home_score} - ${prediction.away_score}`} />
+                  <Metric label="Prediction" value={formatPredictionText(prediction)} />
                   <Metric label="Result" value={prediction.matches ? formatFinalResult(prediction) : "-"} />
                   <Metric label="Points" value={`${prediction.points}`} highlight />
                 </div>
@@ -124,7 +124,9 @@ function formatMatchName(prediction: AdminPredictionRow) {
 function formatFinalResult(prediction: AdminPredictionRow) {
   const match = prediction.matches;
   if (!match || match.home_score === null || match.away_score === null) return "-";
-  return `${match.home_score} - ${match.away_score}`;
+  const score = `${match.home_score} - ${match.away_score}`;
+  const penaltyWinner = match.penalties_enabled ? formatPenaltyWinner(match.penalty_winner_team, match.home_team, match.away_team) : null;
+  return penaltyWinner ? `${score}, pens: ${penaltyWinner}` : score;
 }
 
 function UserCell({ prediction }: { prediction: AdminPredictionRow }) {
@@ -136,10 +138,29 @@ function UserCell({ prediction }: { prediction: AdminPredictionRow }) {
   );
 }
 
-function ScoreText({ home, away }: { home: number; away: number }) {
+function formatPredictionText(prediction: AdminPredictionRow) {
+  const score = `${prediction.home_score} - ${prediction.away_score}`;
+  const match = prediction.matches;
+  const penaltyWinner =
+    match?.penalties_enabled && prediction.penalty_winner_team
+      ? formatPenaltyWinner(prediction.penalty_winner_team, match.home_team, match.away_team)
+      : null;
+
+  return penaltyWinner ? `${score}, pens: ${penaltyWinner}` : score;
+}
+
+function ScoreText({ prediction }: { prediction: AdminPredictionRow }) {
+  const penaltyWinner =
+    prediction.matches?.penalties_enabled && prediction.penalty_winner_team
+      ? formatPenaltyWinner(prediction.penalty_winner_team, prediction.matches.home_team, prediction.matches.away_team)
+      : null;
+
   return (
-    <span className="font-bold">
-      {home} - {away}
+    <span>
+      <span className="block font-bold">
+        {prediction.home_score} - {prediction.away_score}
+      </span>
+      {penaltyWinner ? <span className="mt-1 block text-xs text-ink/55">Pens: {penaltyWinner}</span> : null}
     </span>
   );
 }

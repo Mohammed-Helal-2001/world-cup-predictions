@@ -1,9 +1,17 @@
 import Link from "next/link";
 import { CalendarPlus, Flag, ShieldCheck, TableProperties } from "lucide-react";
+import { AdminCelebrationForm } from "@/components/AdminCelebrationForm";
 import { requireAdmin } from "@/lib/auth";
+import type { LeagueCelebrationSettings } from "@/lib/types";
 
 export default async function AdminPage() {
-  await requireAdmin();
+  const { supabase, user } = await requireAdmin();
+  const { data: settings } = await supabase
+    .from("league_celebration_settings")
+    .select("*")
+    .eq("id", true)
+    .returns<LeagueCelebrationSettings[]>()
+    .single();
 
   return (
     <div className="space-y-6">
@@ -29,6 +37,7 @@ export default async function AdminPage() {
           <p className="mt-2 text-sm leading-6 text-ink/65">Audit every submitted user prediction across all match states.</p>
         </Link>
       </div>
+      <AdminCelebrationForm settings={settings} userId={user.id} />
       <div className="rounded-lg border border-line bg-field p-4 text-sm text-ink/70">
         <ShieldCheck className="mr-2 inline text-pitch" size={17} />
         Admin access is checked on the server and enforced by Supabase RLS.

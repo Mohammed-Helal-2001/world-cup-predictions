@@ -70,3 +70,11 @@ export type LeaderboardPredictionDetail = {
   exact_score: boolean | null;
   match_status: MatchStatus;
 };
+
+export type LeagueCelebrationSettings = {
+  id: boolean;
+  celebration_enabled: boolean;
+  celebration_message: string;
+  updated_at: string;
+  updated_by: string | null;
+};

@@ -122,6 +122,18 @@ button {
   }
 }
 
+@keyframes celebrationShapeFloat {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: translateY(0) rotate(0deg) scale(0.92);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateY(-22px) rotate(14deg) scale(1.08);
+  }
+}
+
 @keyframes shimmerSweep {
   from {
     transform: translateX(-100%);
@@ -148,7 +160,7 @@ button {
   border-radius: 2px;
   opacity: 0;
   animation: confettiFall 4.8s ease-in forwards;
-  animation-iteration-count: 2;
+  animation-iteration-count: 3;
 }
 
 .firework {
@@ -187,6 +199,14 @@ button {
   animation: glowStar 3.4s ease-in-out infinite;
 }
 
+.celebration-shape {
+  position: absolute;
+  color: rgba(255, 233, 144, 0.88);
+  font-size: 1.15rem;
+  text-shadow: 0 0 16px rgba(255, 233, 144, 0.72);
+  animation: celebrationShapeFloat 4.2s ease-in-out infinite;
+}
+
 .celebration-shimmer::after {
   content: "";
   position: absolute;
@@ -202,13 +222,15 @@ button {
   .firework,
   .gold-spark,
   .glow-star,
+  .celebration-shape,
   .celebration-shimmer::after {
     animation: none;
   }
 
   .confetti-piece,
   .firework,
-  .gold-spark {
+  .gold-spark,
+  .celebration-shape {
     display: none;
   }
 

@@ -9,24 +9,36 @@ type Props = {
   leader: LeaderboardRow | null;
 };
 
-const confetti = Array.from({ length: 28 }, (_, index) => ({
+const CELEBRATION_DURATION_MS = 24000;
+
+const confetti = Array.from({ length: 72 }, (_, index) => ({
   id: index,
-  left: `${(index * 13) % 100}%`,
-  delay: `${(index % 9) * 0.24}s`,
-  color: ["#C9A227", "#D75A4A", "#0F7A5B", "#FFFFFF"][index % 4]
+  left: `${(index * 37) % 100}%`,
+  delay: `${(index % 18) * 0.22}s`,
+  duration: `${6.5 + (index % 5) * 0.45}s`,
+  color: ["#C9A227", "#D75A4A", "#0F7A5B", "#FFFFFF", "#7DD3FC", "#F472B6"][index % 6]
 }));
 
-const sparks = Array.from({ length: 18 }, (_, index) => ({
+const sparks = Array.from({ length: 40 }, (_, index) => ({
   id: index,
-  left: `${10 + ((index * 17) % 80)}%`,
-  top: `${18 + ((index * 23) % 56)}%`,
-  delay: `${(index % 6) * 0.35}s`
+  left: `${7 + ((index * 17) % 86)}%`,
+  top: `${14 + ((index * 23) % 64)}%`,
+  delay: `${(index % 10) * 0.28}s`
 }));
 
-const fireworks = Array.from({ length: 10 }, (_, index) => ({
+const fireworks = Array.from({ length: 34 }, (_, index) => ({
   id: index,
   side: index % 2 === 0 ? "left" : "right",
-  delay: `${index * 0.55}s`
+  delay: `${index * 0.62}s`,
+  offset: `${8 + ((index * 11) % 16)}vw`
+}));
+
+const celebrationShapes = Array.from({ length: 14 }, (_, index) => ({
+  id: index,
+  left: `${8 + ((index * 19) % 84)}%`,
+  top: `${16 + ((index * 29) % 62)}%`,
+  delay: `${(index % 7) * 0.42}s`,
+  symbol: ["✦", "✧", "✺", "✹", "◆", "◇", "✶"][index % 7]
 }));
 
 export function EndOfLeagueCelebration({ settings, leader }: Props) {
@@ -42,7 +54,7 @@ export function EndOfLeagueCelebration({ settings, leader }: Props) {
     }
 
     const startTimer = window.setTimeout(() => setStarted(true), 1000);
-    const stopTimer = window.setTimeout(() => setIntroComplete(true), 9800);
+    const stopTimer = window.setTimeout(() => setIntroComplete(true), CELEBRATION_DURATION_MS);
 
     return () => {
       window.clearTimeout(startTimer);
@@ -78,14 +90,21 @@ export function EndOfLeagueCelebration({ settings, leader }: Props) {
           <div className="celebration-shimmer absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-white/35 to-transparent" />
 
           {fireworks.map((firework) => (
-            <span key={firework.id} className={`firework firework-${firework.side}`} style={{ animationDelay: firework.delay }} />
+            <span
+              key={firework.id}
+              className={`firework firework-${firework.side}`}
+              style={{
+                animationDelay: firework.delay,
+                [firework.side === "left" ? "left" : "right"]: firework.offset
+              }}
+            />
           ))}
 
           {confetti.map((piece) => (
             <span
               key={piece.id}
               className="confetti-piece"
-              style={{ left: piece.left, animationDelay: piece.delay, backgroundColor: piece.color }}
+              style={{ left: piece.left, animationDelay: piece.delay, animationDuration: piece.duration, backgroundColor: piece.color }}
             />
           ))}
 
@@ -97,6 +116,18 @@ export function EndOfLeagueCelebration({ settings, leader }: Props) {
           <span className="glow-star left-[84%] top-[28%] delay-300">★</span>
           <span className="glow-star left-[20%] top-[70%] delay-700">★</span>
           <span className="glow-star left-[76%] top-[68%] delay-500">★</span>
+          <span className="glow-star left-[46%] top-[18%] delay-1000">★</span>
+          <span className="glow-star left-[58%] top-[78%] delay-700">★</span>
+
+          {celebrationShapes.map((shape) => (
+            <span
+              key={shape.id}
+              className="celebration-shape"
+              style={{ left: shape.left, top: shape.top, animationDelay: shape.delay }}
+            >
+              {shape.symbol}
+            </span>
+          ))}
 
           <div className="champion-reveal absolute inset-x-4 top-1/2 mx-auto max-w-3xl -translate-y-1/2 text-center text-white">
             <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#fff4b0] to-[#c79720] text-ink shadow-soft ring-4 ring-white/35">
